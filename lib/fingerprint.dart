@@ -54,6 +54,9 @@ class _FingerprintAuthState extends State<FingerprintAuth> {
 
     if (!authenticated) {
       SystemNavigator.pop();
+    } else {
+      login = "Wellcome";
+      loading = false;
     }
   }
 
@@ -87,6 +90,7 @@ class _FingerprintAuthState extends State<FingerprintAuth> {
     });
   }
 
+  String login = "Wellcome";
   _SupportState _supportState = _SupportState.unknown;
   bool loading = true;
   @override
@@ -100,7 +104,6 @@ class _FingerprintAuthState extends State<FingerprintAuth> {
     await _checkBiometric();
     await _getAvailableBiometric();
     await _authenticate();
-    loading = false;
   }
 
   Future<void> _checkBiometricSupport() async {
@@ -128,88 +131,98 @@ class _FingerprintAuthState extends State<FingerprintAuth> {
 
   @override
   Widget build(BuildContext context) {
-    return loading?Container( color:  Colors.blueGrey.shade600, child:const Center(child: CircularProgressIndicator(),)): Scaffold(
-      backgroundColor: Colors.blueGrey.shade600,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Center(
-              child: Text(
-                "Login",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 48.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 50.0),
+    return loading
+        ? Container(
+            color: Colors.blueGrey.shade600,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ))
+        : Scaffold(
+            backgroundColor: Colors.blueGrey.shade600,
+            body: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 15.0),
-                    child: const Text(
-                      "Authenticate using your fingerprint and face or your password ",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, height: 1.5),
+                  Center(
+                    child: Text(
+                      login,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 48.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  authenticated
-                      ? Container(
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 50.0),
+                    child: Column(
+                      children: [
+                        Container(
                           margin: const EdgeInsets.symmetric(vertical: 15.0),
-                          width: double.infinity,
-                          child: FloatingActionButton(
-                            backgroundColor: Colors.green,
-                            onPressed: null,
-                            elevation: 0.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 24.0, vertical: 14.0),
-                              child: Text(
-                                "Authorized success",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        )
-                      : Container(
-                          margin: const EdgeInsets.symmetric(vertical: 15.0),
-                          width: double.infinity,
-                          child: FloatingActionButton(
-                            onPressed: _authenticate,
-                            elevation: 0.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 24.0, vertical: 14.0),
-                              child: Text(
-                                "Authenticate",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
+                          child: const Text(
+                            "Authenticate using your fingerprint and face id or your password ",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white, height: 1.5),
                           ),
                         ),
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          authenticated = false;
-                        });
-                      },
-                      child: const Text("Login again"))
+                        authenticated
+                            ? Container(
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 15.0),
+                                width: double.infinity,
+                                child: FloatingActionButton(
+                                  backgroundColor: Colors.green,
+                                  onPressed: null,
+                                  elevation: 0.0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 24.0, vertical: 14.0),
+                                    child: Text(
+                                      "Authorized success",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 15.0),
+                                width: double.infinity,
+                                child: FloatingActionButton(
+                                  onPressed: _authenticate,
+                                  elevation: 0.0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 24.0, vertical: 14.0),
+                                    child: Text(
+                                      "Authenticate",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                        ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                authenticated = false;
+                                login = "Login";
+                              });
+                            },
+                            child: const Text("Login again"))
+                      ],
+                    ),
+                  )
                 ],
               ),
-            )
-          ],
-        ),
-      ),
-    );
+            ),
+          );
   }
 }
